@@ -22,6 +22,12 @@ This Snakemake workflow processes VCF files to identify rare variants through mu
 - filter_variants: Filters variants below threshold
 - generate_rare_variants: Creates final output file and a stats file
 
+### Resource Management
+Each rule includes specifications for:
+- Thread allocation
+- Memory requirements
+- Input/output handling
+
 ## Configuration
 
 The config.yaml file serves as the central configuration file for the Snakemake pipeline, containing essential parameters and settings:
@@ -39,6 +45,7 @@ The config.yaml file serves as the central configuration file for the Snakemake 
 - output_dir: Specifies "results" as the directory for storing pipeline outputs
 
 This configuration file allows users to easily modify key parameters without changing the pipeline code, making the workflow more flexible and maintainable.
+
 
 ## Output Files
 
@@ -66,11 +73,5 @@ Results are split between two directories. The filtered directory has the final 
 - Substitution types include A>T, C>T, G>A, G>T, T>C
 - Indel sizes: -6, -3 (deletions) and +15 (insertion)
 - Singleton variants: 5 SNPs and 3 indels
-
-### Resource Management
-Each rule includes specifications for:
-- Thread allocation
-- Memory requirements
-- Input/output handling
 
 
