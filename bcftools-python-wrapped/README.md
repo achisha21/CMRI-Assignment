@@ -28,7 +28,7 @@ BCFtools
 
 ## Output
 The script generates:
-- A filtered VCF file containing rare variants
+- A filtered VCF file (*.filtered.vcf.gz) containing rare variants
 - A text file (rare_variants_with_AF.txt) listing:
     - Chromosome
     - Position
