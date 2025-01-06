@@ -12,8 +12,11 @@ This repository contains a Python script that identifies rare variants in a VCF 
     - NA12878.chr21.slice.norm.vcf.gz: Normalized VCF
     - NA12878.chr21.slice.annotated.vcf.gz: Annotated VCF with gnomAD frequencies
     - NA12878.chr21.slice.filtered.vcf.gz: Filtered VCF containing rare variants
+    - Index files (*.csi) for all VCF files
     - rare_variants_with_AF.txt: Output file listing rare variants with their frequencies
     - filtered_stats.txt: Statistical analysis of filtered variants
+
+Note: This script assumes that the sample file (NA12878.chr21.slice.vcf.gz) and the gnomAD file (gnomad.chr21.slice.vcf.gz) do not have indexes. The script generates indexes at each processing step. 
 
 ## Dependencies
 Python 3.x 
