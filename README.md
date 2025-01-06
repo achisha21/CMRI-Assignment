@@ -39,8 +39,7 @@ This implementation uses Snakemake for workflow management, offering a more scal
 
 # Usage
 
-snakemake --cores all
-
+`snakemake --cores all`
 ## Results
 
 Both implementations will output the total number of rare variants and a list of the rare variants in NA12878.chr21.slice.vcf.gz that have a gnomAD population allele frequency of less than 0.01
