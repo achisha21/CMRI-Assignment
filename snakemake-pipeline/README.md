@@ -9,7 +9,7 @@ This Snakemake workflow processes VCF files to identify rare variants through mu
 2. Normalization: Splits multi-allelic sites
 3. Annotation: Adds gnomAD allele frequencies
 4. Filtering: Identifies variants with AF < 0.01
-5. Output Generation: Creates final rare variants list
+5. Output Generation: Creates final rare variants list and a stats file
 
 ## Rules Description
 - all: Defines final output files
@@ -20,7 +20,7 @@ This Snakemake workflow processes VCF files to identify rare variants through mu
 - annotate_vcf: Adds gnomAD allele frequencies
 - index_annotated_vcf: Creates indices for annotated files
 - filter_variants: Filters variants below threshold
-- generate_rare_variants: Creates final output file
+- generate_rare_variants: Creates final output file and a stats file
 
 ## Configuration
 
@@ -49,6 +49,23 @@ Results are split between two directories. The filtered directory has the final 
 ### Filtered Directory:
 - Filtered VCF files containing rare variants (*.filtered.vcf.gz)
 - Tab-separated text files listing rare variants with their frequencies (*.rare_variants_with_AF.txt)
+- Summary statistics of the filtered file in a tab-separated text file (*.filtered_stats.txt)
+
+### Summary of statistics output
+
+- Total variants: 9
+- SNPs: 6
+- Indels: 3
+- MNPs: 0
+- No multiallelic sites
+- Quality Metrics
+- Quality scores range: 21-53
+- Transition/Transversion ratio: 1.00
+- Depth distribution: 2-22 reads per site
+- Variant Details
+- Substitution types include A>T, C>T, G>A, G>T, T>C
+- Indel sizes: -6, -3 (deletions) and +15 (insertion)
+- Singleton variants: 5 SNPs and 3 indels
 
 ### Resource Management
 Each rule includes specifications for:
