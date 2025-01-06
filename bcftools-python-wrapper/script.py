@@ -33,8 +33,9 @@ def normalize_vcf(input_vcf, output_vcf):
     run_command(norm_cmd, f"Normalizing VCF: {input_vcf} -> {output_vcf}")
 
 #Defining a function called build_index to build indexes for required VCF files
-def build_index(vcf_file):
-    run_command(f"bcftools index {vcf_file}", f"Indexing {vcf_file}")
+def build_index(vcf_file, force=False):
+    force_flag = "-f" if force else ""
+    run_command(f"bcftools index  {force_flag} {vcf_file}", f"Indexing {vcf_file}")
 
 #Defining a function called annotate_vcf to annotate VCF file with allele frequencies from gnomAD VCF file
 def annotate_vcf(input_vcf, annotation_vcf, output_vcf):
@@ -114,7 +115,7 @@ def main():
     build_index(normalized_vcf)
 
     #Step 3: Indexing the Annotation VCF (Assuming no index exists)
-    build_index(gnomad_vcf)
+    build_index(gnomad_vcf, force=True)
 
     #Step 4: Annotating normalized VCF file with allele frequencies from gnomAD VCF file
     annotate_vcf(normalized_vcf, gnomad_vcf, annotated_vcf)
