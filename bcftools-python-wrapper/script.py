@@ -89,9 +89,7 @@ def generate_stats(vcf_file, output_file):
     stats_cmd = f"bcftools stats {vcf_file} > {output_file}"
     run_command(stats_cmd, f"Generating statistics for {vcf_file} -> {output_file}")
     
-
-#The main() function manages the workflow for processing a VCF file, 
-#including normalization, annotation, filtering, and variant analysis.
+#The main() function manages the workflow for processing a VCF file, including normalization, annotation, filtering, and variant analysis.
 def main():
     #Defining input and output file paths
     original_vcf = "NA12878.chr21.slice.vcf.gz"
