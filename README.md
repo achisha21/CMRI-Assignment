@@ -31,9 +31,9 @@ This implementation uses Snakemake for workflow management, offering a more scal
 
 # Installation
 
-`conda activate CMRI-Assignment
+`conda activate CMRI-Assignment`
 
-conda install -c bioconda -c conda-forge snakemake`
+`conda install -c bioconda -c conda-forge snakemake`
 
 # Usage
 
