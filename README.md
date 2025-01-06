@@ -18,9 +18,9 @@ This implementation uses BCFtools commands wrapped in a Python script. It provid
 
 # Installation
 
-`conda create --name CMRI-Assignment python=3.9 bcftools=1.10 gsl=2.5 -c bioconda -c conda-forge
+`conda create --name CMRI-Assignment python=3.9 bcftools=1.10 gsl=2.5 -c bioconda -c conda-forge`
 
-conda activate CMRI-Assignment`
+`conda activate CMRI-Assignment`
 
 # Usage
 
