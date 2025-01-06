@@ -7,6 +7,13 @@ This repository contains two implementations of a pipeline to identify rare vari
 # Project Objective
 The goal of this project is to determine the number of rare variants in a sample VCF file based on population frequencies from gnomAD. Specifically, we identify variants with a gnomAD population allele frequency of less than 0.01.
 
+# System Requirements
+- Unix-like environment (Linux, macOS, WSL)
+- /bin/sh shell environment
+- Miniconda or Anaconda
+  
+Note: While this pipeline was developed and tested on macOS, it should work on any Unix-like system with the proper dependencies installed.
+
 # Input Files
 1. NA12878.chr21.slice.vcf.gz: Sample's VCF file to be filtered for rare variants.
 2. gnomad.chr21.slice.vcf.gz:  Population frequencies from gnomAD v4.1.0 in VCF format.
@@ -18,9 +25,9 @@ This implementation uses BCFtools commands wrapped in a Python script. It provid
 
 # Installation
 
-Install miniconda or anaconda
+Install Miniconda or Anaconda
 
-- `conda create --name CMRI-Assignment python=3.9 bcftools=1.10 gsl=2.5 -c bioconda -c conda-forge`
+- `conda create --name CMRI-Assignment python=3.9 bcftools gsl -c bioconda -c conda-forge`
 
 - `conda activate CMRI-Assignment`
 
@@ -35,7 +42,7 @@ This implementation uses Snakemake for workflow management, offering a more scal
 
 - `conda activate CMRI-Assignment`
 
-- `conda install -c bioconda -c conda-forge snakemake`
+- `conda install -c bioconda -c conda-forge snakemake graphviz`
 
 # Usage
 
@@ -44,6 +51,8 @@ This implementation uses Snakemake for workflow management, offering a more scal
 Optional command to generate a directed acyclic graph (DAG)
 
 `snakemake --dag | dot -Tpng > workflow_dag.png`
+
+Note: 
 
 ## Results
 
