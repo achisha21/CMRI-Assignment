@@ -42,12 +42,14 @@ This configuration file allows users to easily modify key parameters without cha
 
 ## Output Files
 
+Results are split between two directories. The filtered directory has the final outputs. 
 ### Annotated Directory:
 - Normalized VCF files (*.normalized.vcf.gz)
 - Annotated VCF files with gnomAD frequencies (*.annotated.vcf.gz)
 ### Filtered Directory:
 - Filtered VCF files containing rare variants (*.filtered.vcf.gz)
 - Tab-separated text files listing rare variants with their frequencies (*.rare_variants_with_AF.txt)
+
 ### Resource Management
 Each rule includes specifications for:
 - Thread allocation
