@@ -1,4 +1,4 @@
-## CMRI-Assignment: Rare Variant Identification Pipeline 
+### CMRI-Assignment: Rare Variant Identification Pipeline 
 
 This repository contains two implementations of a pipeline to identify rare variants in a VCF file:
 1. BCFtools wrapped in Python
