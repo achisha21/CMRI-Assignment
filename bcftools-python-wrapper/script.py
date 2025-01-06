@@ -84,6 +84,12 @@ def list_variants_with_af(vcf_file, output_file, threshold):
     )
     run_command(list_cmd, f"Listing rare variants with AF values -> {output_file}")
 
+#Defining a function to generate VCF statistics
+def generate_stats(vcf_file, output_file):
+    stats_cmd = f"bcftools stats {vcf_file} > {output_file}"
+    run_command(stats_cmd, f"Generating statistics for {vcf_file} -> {output_file}")
+    
+
 #The main() function manages the workflow for processing a VCF file, 
 #including normalization, annotation, filtering, and variant analysis.
 def main():
@@ -94,6 +100,7 @@ def main():
     annotated_vcf = "NA12878.chr21.slice.annotated.vcf.gz"
     filtered_vcf = "NA12878.chr21.slice.filtered.vcf.gz"
     output_file = "rare_variants_with_AF.txt"
+    stats_file = "filtered_stats.txt"
     threshold = 0.01
 
     #Ensuring the required input files exist before proceeding
@@ -130,6 +137,10 @@ def main():
     #Step 9: Listing the Rare Variants with AF Values
     list_variants_with_af(filtered_vcf, output_file, threshold)
     print(f"Rare variants with AF < {threshold} saved in: {output_file}")
+    
+    #Step 10: Generating statistics for the filtered VCF
+    generate_stats(filtered_vcf, stats_file)
+    print(f"Statistics for filtered VCF saved in: {stats_file}")
 
     #Displaying the output file contents
     if os.path.isfile(output_file):
