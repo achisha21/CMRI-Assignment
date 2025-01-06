@@ -41,6 +41,10 @@ This implementation uses Snakemake for workflow management, offering a more scal
 
 `snakemake --cores all`
 
+Optional command to generate a directed acyclic graph (DAG)
+
+`snakemake --dag | dot -Tpng > workflow_dag.png`
+
 ## Results
 
 Both implementations will output the total number of rare variants in a filtered VCF file and a list of the rare variants (.txt) in NA12878.chr21.slice.vcf.gz that have a gnomAD population allele frequency of less than 0.01.

@@ -139,19 +139,24 @@ rule filter_variants:
             {input.annotated_vcf}
         """
 
-#Creating final output file with rare variants
+#Creating final output file with rare variants and generating stats
 rule generate_rare_variants:
     input:
         filtered_vcf=f"{filtered_dir}/{{sample}}.filtered.vcf.gz"
     output:
-        rare_variants_file=f"{filtered_dir}/{{sample}}.rare_variants_with_AF.txt"
+        rare_variants_file=f"{filtered_dir}/{{sample}}.rare_variants_with_AF.txt",
+        stats_file=f"{filtered_dir}/{{sample}}.filtered_stats.txt"
     threads: 1
     resources:
         mem_mb=2000
     shell:
         """
+        #Generating rare variants file
         echo -e "CHROM\tPOS\tREF\tALT\tAF" > {output.rare_variants_file}
         bcftools query \
             -f '%CHROM\\t%POS\\t%REF\\t%ALT\\t%INFO/AF\\n' \
             {input.filtered_vcf} >> {output.rare_variants_file}
+        
+        #Generating statistics file
+        bcftools stats {input.filtered_vcf} > {output.stats_file}
         """
