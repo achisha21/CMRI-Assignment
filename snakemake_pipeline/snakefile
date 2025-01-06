@@ -1,0 +1,157 @@
+import os #Offers tools that provides a consistent interface across different operating systems
+
+#Loading settings from config file
+configfile: "config.yaml"
+
+#Getting parameters from config file
+threshold = config["threshold"]
+gnomad_vcf = config["gnomad_vcf"]
+output_dir = config["output_dir"]
+raw_dir = config.get("raw_dir", "raw")
+
+#Setting up directory structure
+annotated_dir = os.path.join(output_dir, "annotated")
+filtered_dir = os.path.join(output_dir, "filtered")
+
+#Creating directories if they don't exist
+for directory in [raw_dir, annotated_dir, filtered_dir]:
+    os.makedirs(directory, exist_ok=True)
+
+#Main rule that defines the final output files we want
+rule all:
+    input:
+        expand("raw/{sample}.vcf.gz.csi", sample=config["samples"]),
+        expand(f"{annotated_dir}/{{sample}}.normalized.vcf.gz", sample=config["samples"]),
+        expand(f"{annotated_dir}/{{sample}}.normalized.vcf.gz.csi", sample=config["samples"]),
+        expand(f"{annotated_dir}/{{sample}}.annotated.vcf.gz", sample=config["samples"]),
+        expand(f"{annotated_dir}/{{sample}}.annotated.vcf.gz.csi", sample=config["samples"]),
+        expand(f"{filtered_dir}/{{sample}}.filtered.vcf.gz", sample=config["samples"]),
+        expand(f"{filtered_dir}/{{sample}}.rare_variants_with_AF.txt", sample=config["samples"])
+
+#Indexing the input VCF files
+rule index_raw_vcf:
+    input:
+        vcf="raw/{sample}.vcf.gz"
+    output:
+        index="raw/{sample}.vcf.gz.csi"
+    threads: 1
+    resources:
+        mem_mb=1000
+    shell:
+        "bcftools index --threads {threads} {input.vcf} -o {output.index}"
+
+#Splitting multi-allelic sites
+rule normalize_vcf:
+    input:
+        vcf="raw/{sample}.vcf.gz"
+    output:
+        normalized=f"{annotated_dir}/{{sample}}.normalized.vcf.gz"
+    threads: 4
+    resources:
+        mem_mb=1000
+    shell:
+        """
+        bcftools norm \
+            --threads {threads} \
+            -m -any \
+            -O z \
+            -o {output.normalized} \
+            {input.vcf}
+        """
+
+#Indexing normalized VCF files
+rule index_normalized_vcf:
+    input:
+        vcf=f"{annotated_dir}/{{sample}}.normalized.vcf.gz"
+    output:
+        index=f"{annotated_dir}/{{sample}}.normalized.vcf.gz.csi"
+    threads: 1
+    resources:
+        mem_mb=1000
+    shell:
+        "bcftools index --threads {threads} {input.vcf} -o {output.index}"
+
+#Indexing gnomAD VCF
+rule index_gnomad_vcf:
+    input:
+        vcf=gnomad_vcf
+    output:
+        index=os.path.join(os.path.dirname(gnomad_vcf), os.path.basename(gnomad_vcf) + ".csi")
+    threads: 4
+    resources:
+        mem_mb=4000
+    shell:
+        "bcftools index --threads {threads} {input.vcf} -o {output.index}"
+
+#Annotating VCF file with allele frequencies from gnomAD VCF file
+rule annotate_vcf:
+    input:
+        normalized_vcf=f"{annotated_dir}/{{sample}}.normalized.vcf.gz",
+        normalized_index=f"{annotated_dir}/{{sample}}.normalized.vcf.gz.csi",
+        gnomad_vcf=gnomad_vcf,
+        index_gnomad=os.path.join(os.path.dirname(gnomad_vcf), os.path.basename(gnomad_vcf) + ".csi")
+    output:
+        annotated_vcf=f"{annotated_dir}/{{sample}}.annotated.vcf.gz"
+    threads: 4
+    resources:
+        mem_mb=2000
+    shell:
+        """
+        bcftools annotate \
+            --threads {threads} \
+            -a {input.gnomad_vcf} \
+            -c INFO/AF \
+            -O z \
+            -o {output.annotated_vcf} \
+            {input.normalized_vcf}
+        """
+
+#Indexing annotated VCF files
+rule index_annotated_vcf:
+    input:
+        annotated_vcf=f"{annotated_dir}/{{sample}}.annotated.vcf.gz"
+    output:
+        index=f"{annotated_dir}/{{sample}}.annotated.vcf.gz.csi"
+    threads: 1
+    resources:
+        mem_mb=1000
+    shell:
+        "bcftools index --threads {threads} {input.annotated_vcf} -o {output.index}"
+
+#Filtering variants below frequency threshold (0.01)
+rule filter_variants:
+    input:
+        annotated_vcf=f"{annotated_dir}/{{sample}}.annotated.vcf.gz"
+    output:
+        filtered_vcf=f"{filtered_dir}/{{sample}}.filtered.vcf.gz"
+    params:
+        threshold=threshold
+    threads: 4
+    resources:
+        mem_mb=2000
+    shell:
+        """
+        bcftools view \
+            --threads {threads} \
+            -i 'MIN(INFO/AF[*]) < {params.threshold} || INFO/AF="."' \
+            -O z \
+            -o {output.filtered_vcf} \
+            {input.annotated_vcf}
+        """
+
+#Creating final output file with rare variants
+rule generate_rare_variants:
+    input:
+        filtered_vcf=f"{filtered_dir}/{{sample}}.filtered.vcf.gz"
+    output:
+        rare_variants_file=f"{filtered_dir}/{{sample}}.rare_variants_with_AF.txt"
+    threads: 1
+    resources:
+        mem_mb=2000
+    shell:
+        """
+        echo -e "CHROM\tPOS\tREF\tALT\tAF" > {output.rare_variants_file}
+        bcftools query \
+            -f '%CHROM\\t%POS\\t%REF\\t%ALT\\t%INFO/AF\\n' \
+            {input.filtered_vcf} >> {output.rare_variants_file}
+        """

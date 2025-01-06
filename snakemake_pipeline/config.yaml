@@ -1,0 +1,6 @@
+threshold: 0.01  #Allele Frequency threshold
+samples:
+  - NA12878.chr21.slice  #Sample name without file extension
+gnomad_vcf: gnomAD_file/gnomad.chr21.slice.vcf.gz  #Reference gnomAD VCF with population frequencies
+raw_dir: raw  #Directory containing input VCF files
+output_dir: results  #Directory to store outputs
