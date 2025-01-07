@@ -52,7 +52,6 @@ Optional command to generate a directed acyclic graph (DAG)
 
 `snakemake --dag | dot -Tpng > workflow_dag.png`
 
-Note: 
 
 ## Results
 
