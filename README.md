@@ -55,7 +55,16 @@ Optional command to generate a directed acyclic graph (DAG)
 
 ## Results
 
-Both implementations will output the total number of rare variants in a filtered VCF file and a list of the rare variants (.txt) in NA12878.chr21.slice.vcf.gz that have a gnomAD population allele frequency of less than 0.01.
+Both implementations generate the following files for variants in NA12878.chr21.slice.vcf.gz with gnomAD population allele frequency < 0.01:
 
+### Final Output Files:
+- Filtered VCF file containing rare variants
+- Text file listing rare variants with their frequencies
+- Statistical analysis file with detailed variant metrics
+
+### Intermediate Files:
+- Normalized VCF (*.norm.vcf.gz): Contains split multi-allelic sites
+- Annotated VCF (*.annotated.vcf.gz): Includes gnomAD frequency annotations
+- Index files (*.csi) for all VCF files
 
 
